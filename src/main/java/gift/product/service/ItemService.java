@@ -2,6 +2,7 @@ package gift.product.service;
 
 
 import gift.product.entity.Item;
+import gift.product.entity.User;
 import gift.product.repository.ItemRepository;
 import gift.product.dto.GetItemResponse;
 import gift.product.dto.ItemRequest;
@@ -26,14 +27,18 @@ public class ItemService {
 
 
 	public Long createItem(ItemRequest req, Long userId) {
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저입니다."));
+
 		Item item = Item.builder()
-			.userId(userId)
+			.user(user)
 			.name(req.name())
 			.price(req.price())
 			.imageUrl(req.imageUrl())
 			.build();
 
-		return itemRepository.save(item);
+		Item saved = itemRepository.save(item);
+		return saved.getId();
 	}
 
 
@@ -43,7 +48,7 @@ public class ItemService {
 		return items.stream()
 			.map(item -> GetItemResponse.builder()
 				.id(item.getId())
-				.authorId(item.getUserId())
+				.authorId(item.getUser().getId())
 				.name(item.getName())
 				.price(item.getPrice())
 				.imageUrl(item.getImageUrl())
@@ -57,7 +62,7 @@ public class ItemService {
 		Item item = itemRepository.findById(itemId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 아이템입니다."));
 		return GetItemResponse.builder()
 			.id(item.getId())
-			.authorId(item.getUserId())
+			.authorId(item.getUser().getId())
 			.name(item.getName())
 			.price(item.getPrice())
 			.imageUrl(item.getImageUrl())
@@ -66,27 +71,24 @@ public class ItemService {
 
 
 	public GetItemResponse updateItem(Long itemId, Long userId, ItemRequest req) {
-		Item item = itemRepository.findById(itemId).orElseThrow(() -> new NoSuchElementException("존재하지 않는 아이템입니다."));
-		item.isItemAuthor(userId);
+		Item item = itemRepository.findById(itemId)
+			.orElseThrow(() -> new NoSuchElementException("존재하지 않는 아이템입니다."));
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+		item.isItemAuthor(user);
 
-		Item updatedItem = Item.builder()
-				.userId(userId)
-				.name(req.name())
-				.price(req.price())
-				.imageUrl(req.imageUrl())
-				.build();
-
-		itemRepository.update(itemId, updatedItem);
+		item.updateItem(req.name(), req.price(), req.imageUrl());
 		return getItem(itemId);
 	}
 
 
 	public void deleteItem(Long itemId, Long userId) {
-		Item item = itemRepository.findById(itemId).orElseThrow(() -> new RuntimeException("존재하지 않는 아이템입니다."));
-		item.isItemAuthor(userId);
+		Item item = itemRepository.findById(itemId)
+			.orElseThrow(() -> new NoSuchElementException("존재하지 않는 아이템입니다."));
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+		item.isItemAuthor(user);
 		itemRepository.deleteById(itemId);
 	}
-
-
 
 }
