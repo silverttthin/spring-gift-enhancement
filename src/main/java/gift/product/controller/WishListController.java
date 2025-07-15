@@ -30,21 +30,16 @@ public class WishListController {
 		return wishListService.createWishList(userId, request);
 	}
 
-	@DeleteMapping("/{itemId}")
+	@DeleteMapping("/{wishListId}")
 	@Authenticated
-	public void deleteWishList(@RequestAttribute Long userId, @PathVariable Long itemId) {
-		wishListService.deleteWishList(userId, itemId);
+	public void deleteWishList(@RequestAttribute Long userId, @PathVariable Long wishListId) {
+		wishListService.deleteWishList(userId, wishListId);
 	}
 
-	@PatchMapping("/{itemId}/increase")
+	@PatchMapping("/{wishListId}/update")
 	@Authenticated
-	public void increaseWishList(@RequestAttribute Long userId, @PathVariable Long itemId) {
-		wishListService.increaseAmount(userId, itemId);
+	public void updateWishListAmount(@RequestAttribute Long userId, @PathVariable Long wishListId, @RequestParam(name = "amount") int amount) {
+		wishListService.updateAmount(userId, wishListId, amount);
 	}
 
-	@PatchMapping("/{itemId}/decrease")
-	@Authenticated
-	public void decreaseWishList(@RequestAttribute Long userId, @PathVariable Long itemId) {
-		wishListService.decreaseAmount(userId, itemId);
-	}
 }
