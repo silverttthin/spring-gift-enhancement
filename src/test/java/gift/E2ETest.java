@@ -110,17 +110,17 @@ public class E2ETest {
 
 		assertThat(createdWishListId).isEqualTo(2L);
 
-		// 위시리스트 수량 삭제 추가 테스트
+		// 위시리스트 수량 변경 테스트
 		assertThatThrownBy(() ->
 			restClient.patch()
-				.uri(("/wishlists/" + createdWishListId) +"/decrease")
+				.uri(("/wishlists/" + createdWishListId) +"/update?amount=-50")
 				.header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
 				.retrieve()
 				.toBodilessEntity()
 		).isInstanceOf(HttpClientErrorException.BadRequest.class);
 
 		restClient.patch()
-				.uri(("/wishlists/" + createdWishListId) +"/increase")
+				.uri(("/wishlists/" + createdWishListId) +"/update?amount=20")
 				.header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
 				.retrieve()
 				.toBodilessEntity();
@@ -130,7 +130,7 @@ public class E2ETest {
 			.retrieve()
 			.body(List.class);
 		Map<String, Object> insertedItem = (Map<String, Object>) myWishList.get(1);
-		assertThat(insertedItem.get("amount")).isEqualTo(2);
+		assertThat(insertedItem.get("amount")).isEqualTo(20);
 
 		// 위시리스트 삭제 후 목록조회
 		restClient.delete()
