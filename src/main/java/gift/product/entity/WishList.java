@@ -1,35 +1,63 @@
 package gift.product.entity;
 
 
-public class WishList {
-	private final Long id;
-	private final Long userId;
-	private final Long itemId;
-	private final int amount;
+import jakarta.persistence.*;
 
-	public WishList(Long id, Long userId, Long itemId, int amount) {
+
+@Entity
+public class WishList {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User user;
+
+	@ManyToOne
+	@JoinColumn(name = "item_id")
+	private Item item;
+
+	private int amount;
+
+	protected WishList() {}
+
+	public WishList(Long id, User user, Item item, int amount) {
 		this.id = id;
-		this.userId = userId;
-		this.itemId = itemId;
+		this.user = user;
+		this.item = item;
 		this.amount = amount;
 	}
 
-	public WishList(Long userId, Long itemId, int amount) {
-		this(null, userId, itemId, amount);
+	public WishList(User user, Item item, int amount) {
+		this(null, user, item, amount);
 	}
 
 	public Long getId() {
 		return id;
 	}
 
-	public Long getUserId() {
-		return userId;
+	public User getUser() {
+		return user;
 	}
 
-	public Long getItemId() {
-		return itemId;
+	public Item getItem() {
+		return item;
 	}
 
 	public int getAmount() { return amount; }
+
+	public void updateAmount(int amount) {
+		if (amount <= 0) {
+			throw new IllegalArgumentException("수량은 반드시 1 이상이여야 합니다");
+		}
+		this.amount = amount;
+	}
+
+	public void validateOwner(User user) {
+		if(user == null || user != this.user) {
+			throw new IllegalArgumentException("잘못된 사용자 정보입니다.");
+		}
+	}
 
 }
