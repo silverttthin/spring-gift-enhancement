@@ -1,11 +1,19 @@
 package gift.product.entity;
 
 
+import jakarta.persistence.*;
+
+
+@Entity
 public class Item {
 
-	private final Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-	private final Long userId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id")
+	private User user;
 
 	private String name;
 
@@ -13,28 +21,31 @@ public class Item {
 
 	private String imageUrl;
 
-	public Item(Long id, Long userId, String name, Integer price, String imageUrl) {
+	public Item(Long id, User user, String name, Integer price, String imageUrl) {
 		validateKakaoKeyword(name);
 
 		this.id = id;
-		this.userId = userId;
+		this.user = user;
 		this.name = name;
 		this.price = price;
 		this.imageUrl = imageUrl;
 	}
+
+	// for jpa
+	protected Item() {}
 
 	public static ItemBuilder builder() {
 		return new ItemBuilder();
 	}
 
 	public static class ItemBuilder {
-		private Long userId;
+		private User user;
 		private String name;
 		private Integer price;
 		private String imageUrl;
 
-		public ItemBuilder userId(Long userId){
-			this.userId = userId;
+		public ItemBuilder user(User user) {
+			this.user = user;
 			return this;
 		}
 		public ItemBuilder name(String name){
@@ -50,7 +61,7 @@ public class Item {
 			return this;
 		}
 		public Item build() {
-			return new Item(null, userId, name, price, imageUrl);
+			return new Item(null, user, name, price, imageUrl);
 		}
 	}
 
@@ -60,10 +71,16 @@ public class Item {
 		}
 	}
 
-	public void isItemAuthor(Long userId) {
-		if(this.userId != userId){
+	public void isItemAuthor(User user) {
+		if(this.user.getId() != user.getId()){
 			throw new IllegalArgumentException("작성자만 수정,삭제 가능합니다.");
 		}
+	}
+
+	public void updateItem(String name, int price, String imageUrl) {
+		this.name = name;
+		this.price = price;
+		this.imageUrl = imageUrl;
 	}
 
 	public Long getId() {
@@ -74,34 +91,16 @@ public class Item {
 		return name;
 	}
 
-
-	public void setName(String name) {
-		this.name = name;
+	public User getUser() {
+		return user;
 	}
-
-
-	public Long getUserId() {
-		return userId;
-	}
-
 
 	public Integer getPrice() {
 		return price;
 	}
 
-
-	public void setPrice(Integer price) {
-		this.price = price;
-	}
-
-
 	public String getImageUrl() {
 		return imageUrl;
-	}
-
-
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
 	}
 
 }

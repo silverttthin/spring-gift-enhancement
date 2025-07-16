@@ -42,7 +42,8 @@ public class UserService {
 		String encodedPassword = passwordEncoder.encode(req.password());
 
 		User user = new User(req.email(), encodedPassword, req.nickName());
-		return userRepository.save(user);
+		User saved = userRepository.save(user);
+		return saved.getId();
 
 	}
 

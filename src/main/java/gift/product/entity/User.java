@@ -1,29 +1,35 @@
 package gift.product.entity;
 
 
+import jakarta.persistence.*;
+
+
+@Entity
+@Table(name = "users")
 public class User {
 
-	private final Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
 	private String email;
 
 	private String password;
 
-	private String nickName;
+	private String nickname;
 
-
-	public User(Long id, String email, String password, String nickName) {
+	public User(Long id, String email, String password, String nickname) {
 		this.id = id;
 		this.email = email;
 		this.password = password;
-		this.nickName = nickName;
+		this.nickname = nickname;
 	}
 
-
-	public User(String email, String password, String nickName) {
-		this(null, email, password, nickName);
+	public User(String email, String password, String nickname) {
+		this(null, email, password, nickname);
 	}
 
+	protected User() {}
 
 	public Long getId() {
 		return id;
@@ -33,29 +39,12 @@ public class User {
 		return email;
 	}
 
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-
 	public String getPassword() {
 		return password;
 	}
 
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-
-	public String getNickName() {
-		return nickName;
-	}
-
-
-	public void setName(String name) {
-		this.nickName = nickName;
+	public String getNickname() {
+		return nickname;
 	}
 
 }
