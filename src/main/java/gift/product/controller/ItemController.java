@@ -30,8 +30,8 @@ public class ItemController {
 
 	// 게시글 전체 조회
 	@GetMapping()
-	public List<GetItemResponse> getAllItems() {
-		return itemService.getAllItems();
+	public List<GetItemResponse> getAllItems(@RequestParam(name = "page", defaultValue = "1") int page) {
+		return itemService.getAllItems(page);
 	}
 
 	// 게시글 단건 조회
