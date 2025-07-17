@@ -21,8 +21,8 @@ public class WishListController {
 
 	@GetMapping
 	@Authenticated
-	public List<GetWishListResponse> getWishList(@RequestAttribute Long userId) {
-		return wishListService.getWishList(userId);
+	public List<GetWishListResponse> getWishList(@RequestAttribute Long userId, @RequestParam(name = "page", defaultValue = "1") int page) {
+		return wishListService.getWishList(userId, page);
 	}
 
 	@PostMapping
