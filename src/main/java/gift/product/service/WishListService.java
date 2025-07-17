@@ -2,6 +2,7 @@ package gift.product.service;
 
 
 import gift.product.dto.CreateWishListRequest;
+import gift.product.dto.GetWishListResponse;
 import gift.product.entity.Item;
 import gift.product.entity.User;
 import gift.product.entity.WishList;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -55,10 +57,15 @@ public class WishListService {
 		wishItem.updateAmount(amount);
 	}
 
-	public List<WishList> getWishList(Long userId) {
+	@Transactional(readOnly = true)
+	public List<GetWishListResponse> getWishList(Long userId) {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저입니다."));
-		return wishListRepository.findAllByUser(user);
+		List<WishList> myWishList = wishListRepository.findAllByUser(user);
+
+		return myWishList.stream()
+			.map(GetWishListResponse::from)
+			.collect(Collectors.toList());
 	}
 
 	public void deleteWishList(Long userId, Long wishListId) {

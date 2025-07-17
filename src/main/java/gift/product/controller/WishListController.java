@@ -3,6 +3,7 @@ package gift.product.controller;
 
 import gift.product.commons.annotations.Authenticated;
 import gift.product.dto.CreateWishListRequest;
+import gift.product.dto.GetWishListResponse;
 import gift.product.entity.WishList;
 import gift.product.service.WishListService;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class WishListController {
 
 	@GetMapping
 	@Authenticated
-	public List<WishList> getWishList(@RequestAttribute Long userId) {
+	public List<GetWishListResponse> getWishList(@RequestAttribute Long userId) {
 		return wishListService.getWishList(userId);
 	}
 

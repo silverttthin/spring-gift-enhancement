@@ -111,6 +111,7 @@ public class E2ETest {
 		assertThat(createdWishListId).isEqualTo(2L);
 
 		// 위시리스트 수량 변경 테스트
+		// 수량변경 베드케이스 테스트
 		assertThatThrownBy(() ->
 			restClient.patch()
 				.uri(("/wishlists/" + createdWishListId) +"/update?amount=-50")
@@ -119,11 +120,13 @@ public class E2ETest {
 				.toBodilessEntity()
 		).isInstanceOf(HttpClientErrorException.BadRequest.class);
 
+		// 제대로 수량변경 해보기
 		restClient.patch()
 				.uri(("/wishlists/" + createdWishListId) +"/update?amount=20")
 				.header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
 				.retrieve()
 				.toBodilessEntity();
+
 		List myWishList = restClient.get()
 			.uri("/wishlists")
 			.header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
