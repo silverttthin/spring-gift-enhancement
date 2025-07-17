@@ -21,4 +21,16 @@ INSERT INTO item (name, price, image_url, user_id) VALUES
 ('item14',14000, 'url14', 2),
 ('item15',15000, 'url15', 2);
 
-INSERT INTO wish_list (user_id, item_id, amount) VALUES (1, 1, 1)
+INSERT INTO wish_list (user_id, item_id, amount) VALUES
+ (1, 1, 1),
+ (1, 2, 1),
+ (1, 3, 1),
+ (1, 4, 1),
+ (1, 5, 1),
+ (2, 1, 1),
+ (2, 2, 1),
+ (2, 3, 1),
+ (2, 4, 1),
+ (2, 5, 1),
+ (2, 6, 1),
+ (2, 7, 1)

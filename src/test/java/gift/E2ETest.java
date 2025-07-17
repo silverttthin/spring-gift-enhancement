@@ -100,7 +100,7 @@ public class E2ETest {
 		assertThat(items.size()).isEqualTo(15);
 
 		// 위시리스트 추가
-		CreateWishListRequest wishListRequest = new CreateWishListRequest(2L);
+		CreateWishListRequest wishListRequest = new CreateWishListRequest(6L);
 		Long createdWishListId = restClient.post()
 			.uri("/wishlists")
 			.header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
@@ -108,7 +108,7 @@ public class E2ETest {
 			.retrieve()
 			.body(Long.class);
 
-		assertThat(createdWishListId).isEqualTo(2L);
+		assertThat(createdWishListId).isEqualTo(13L);
 
 		// 위시리스트 수량 변경 테스트
 		// 수량변경 베드케이스 테스트
@@ -132,8 +132,9 @@ public class E2ETest {
 			.header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
 			.retrieve()
 			.body(List.class);
-		Map<String, Object> insertedItem = (Map<String, Object>) myWishList.get(1);
-		assertThat(insertedItem.get("amount")).isEqualTo(20);
+
+		Map<String, Object> fifthItem = (Map<String, Object>) myWishList.get(5);
+		assertThat(fifthItem.get("amount")).isEqualTo(20);
 
 		// 위시리스트 삭제 후 목록조회
 		restClient.delete()
@@ -147,7 +148,7 @@ public class E2ETest {
 			.header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
 			.retrieve()
 			.body(List.class);
-		assertThat(afterDeleteWishList.size()).isEqualTo(1);
+		assertThat(afterDeleteWishList.size()).isEqualTo(5);
 	}
 
 	@Test
