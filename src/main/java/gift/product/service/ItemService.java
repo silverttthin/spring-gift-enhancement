@@ -9,6 +9,7 @@ import gift.product.dto.ItemRequest;
 import gift.product.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,21 +46,16 @@ public class ItemService {
 
 
 	@Transactional(readOnly = true)
-	public List<GetItemResponse> getAllItems(int page) {
+	public Page<GetItemResponse> getAllItems(Pageable pageable) {
+		Page<Item> items = itemRepository.findAll(pageable);
 
-		int index = page - 1;
-		PageRequest pageRequest = PageRequest.of(index, 3);
-		Page<Item> items = itemRepository.findAll(pageRequest);
-
-		return items.stream()
-			.map(item -> GetItemResponse.builder()
-				.id(item.getId())
-				.authorId(item.getUser().getId())
-				.name(item.getName())
-				.price(item.getPrice())
-				.imageUrl(item.getImageUrl())
-				.build())
-			.toList();
+		return items.map(item -> GetItemResponse.builder()
+			.id(item.getId())
+			.authorId(item.getUser().getId())
+			.name(item.getName())
+			.price(item.getPrice())
+			.imageUrl(item.getImageUrl())
+			.build());
 	}
 
 

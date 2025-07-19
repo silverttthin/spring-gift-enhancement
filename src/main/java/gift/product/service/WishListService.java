@@ -12,6 +12,7 @@ import gift.product.repository.WishListRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,17 +61,13 @@ public class WishListService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<GetWishListResponse> getWishList(Long userId, int page) {
+	public Page<GetWishListResponse> getWishList(Long userId, Pageable pageable) {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new NoSuchElementException("존재하지 않는 유저입니다."));
 
-		int index = page -1;
-		PageRequest pageRequest = PageRequest.of(index, 2);
-		Page<WishList> myWishList = wishListRepository.findAllByUser(user, pageRequest);
+		Page<WishList> myWishList = wishListRepository.findAllByUser(user, pageable);
 
-		return myWishList.stream()
-			.map(GetWishListResponse::from)
-			.collect(Collectors.toList());
+		return myWishList.map(GetWishListResponse::from);
 	}
 
 	public void deleteWishList(Long userId, Long wishListId) {
