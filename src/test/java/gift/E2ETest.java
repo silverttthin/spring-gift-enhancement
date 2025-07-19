@@ -1,5 +1,6 @@
 package gift;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import gift.product.dto.*;
 import gift.product.commons.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -91,13 +92,13 @@ public class E2ETest {
 			.retrieve()
 			.toBodilessEntity();
 
-		// 삭제 후 전체 목록 조회
-		List items = restClient.get()
-			.uri("/products")
+		// 삭제 후 전체 목록 조회 (페이징 반영)
+		JsonNode res = restClient.get()
+			.uri("/products?size=2")
 			.retrieve()
-			.body(List.class);
+			.body(JsonNode.class);
 
-		assertThat(items.size()).isEqualTo(15);
+		assertThat(res.get("content").size()).isEqualTo(2);
 
 		// 위시리스트 추가
 		CreateWishListRequest wishListRequest = new CreateWishListRequest(6L);
@@ -127,14 +128,16 @@ public class E2ETest {
 				.retrieve()
 				.toBodilessEntity();
 
-		List myWishList = restClient.get()
-			.uri("/wishlists")
+		JsonNode myWishList = restClient.get()
+			.uri("/wishlists?page=1&size=3")
 			.header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
 			.retrieve()
-			.body(List.class);
+			.body(JsonNode.class);
 
-		Map<String, Object> fifthItem = (Map<String, Object>) myWishList.get(5);
-		assertThat(fifthItem.get("amount")).isEqualTo(20);
+		JsonNode secondItem = myWishList.get("content").get(2);
+		assertThat(secondItem.get("amount").asInt()).isEqualTo(20);
+
+
 
 		// 위시리스트 삭제 후 목록조회
 		restClient.delete()
@@ -143,12 +146,14 @@ public class E2ETest {
 			.retrieve()
 			.toBodilessEntity();
 
-		List afterDeleteWishList = restClient.get()
+		JsonNode afterDeleteWishList = restClient.get()
 			.uri("/wishlists")
 			.header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
 			.retrieve()
-			.body(List.class);
-		assertThat(afterDeleteWishList.size()).isEqualTo(5);
+			.body(JsonNode.class);
+
+		JsonNode contents = afterDeleteWishList.get("content");
+		assertThat(contents.size()).isEqualTo(5);
 	}
 
 	@Test
