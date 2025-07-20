@@ -3,8 +3,11 @@ package gift.product.controller;
 
 import gift.product.commons.annotations.Authenticated;
 import gift.product.dto.CreateWishListRequest;
+import gift.product.dto.GetWishListResponse;
 import gift.product.entity.WishList;
 import gift.product.service.WishListService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,8 +23,8 @@ public class WishListController {
 
 	@GetMapping
 	@Authenticated
-	public List<WishList> getWishList(@RequestAttribute Long userId) {
-		return wishListService.getWishList(userId);
+	public Page<GetWishListResponse> getWishList(@RequestAttribute Long userId, Pageable pageable) {
+		return wishListService.getWishList(userId, pageable);
 	}
 
 	@PostMapping

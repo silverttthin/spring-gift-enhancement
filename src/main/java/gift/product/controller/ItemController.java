@@ -6,6 +6,8 @@ import gift.product.service.ItemService;
 import gift.product.dto.GetItemResponse;
 import gift.product.dto.ItemRequest;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,8 +32,8 @@ public class ItemController {
 
 	// 게시글 전체 조회
 	@GetMapping()
-	public List<GetItemResponse> getAllItems() {
-		return itemService.getAllItems();
+	public Page<GetItemResponse> getAllItems(Pageable pageable) {
+		return itemService.getAllItems(pageable);
 	}
 
 	// 게시글 단건 조회
