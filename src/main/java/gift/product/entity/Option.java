@@ -49,7 +49,7 @@ public class Option {
 
 
 	private void validateQuantity(int quantity) {
-		if (quantity < 0 || quantity > 100000000) {
+		if (quantity < 0 || quantity >= 100000000) {
 			throw new IllegalArgumentException("수량은 1개 이상 1억 미만입니다.");
 		}
 	}
