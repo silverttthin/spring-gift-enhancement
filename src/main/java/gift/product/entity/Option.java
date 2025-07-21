@@ -11,7 +11,7 @@ public class Option {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private String name;
+	private String optionName;
 
 	private int quantity;
 
@@ -22,27 +22,27 @@ public class Option {
 	protected Option() {}
 
 
-	public Option(Long id, String name, int quantity, Item item) {
-		validateName(name);
+	public Option(Long id, String optionName, int quantity, Item item) {
+		validateName(optionName);
 		validateQuantity(quantity);
 
 		this.id = id;
-		this.name = name;
+		this.optionName = optionName;
 		this.quantity = quantity;
 		this.item = item;
 	}
 
 
-	private void validateName(String name) {
-		if (name == null || name.trim().isEmpty()) {
+	private void validateName(String optionName) {
+		if (optionName == null || optionName.trim().isEmpty()) {
 			throw new IllegalArgumentException("옵션명은 필수입니다.");
 		}
-		if (name.length() > 50) {
+		if (optionName.length() > 50) {
 			throw new IllegalArgumentException("옵션명은 최대 50자까지 가능합니다.");
 		}
 
 		String possiblePattern = "^[가-힣a-zA-Z0-9\\s()\\[\\]+\\-&/_]*$";
-		if(!name.matches(possiblePattern)) {
+		if(!optionName.matches(possiblePattern)) {
 			throw new IllegalArgumentException("허용되지 않는 특수문자가 포함됐습니다.");
 		}
 	}
@@ -65,8 +65,8 @@ public class Option {
 	}
 
 
-	public String getName() {
-		return name;
+	public String getOptionName() {
+		return optionName;
 	}
 
 
