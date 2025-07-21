@@ -9,12 +9,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -72,6 +72,25 @@ public class E2ETest {
 
 		assertThat(getItemResponse.name()).isEqualTo("테스트콜라");
 		assertThat(getItemResponse.authorId()).isEqualTo(1L);
+
+		// 추가한 상품에 옵션 추가
+		restClient.post()
+			.uri("/products/"+ createdId+"/options")
+			.header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+			.body(new CreateOptionRequest("테스트용옵션임", 50))
+			.retrieve()
+			.toBodilessEntity();
+
+		// 옵션 조회
+		// 추가한 상품에 옵션 추가
+		List<GetOptionsResponse> getOptionsResponses = restClient.get()
+			.uri("/products/"+ createdId+"/options")
+			.retrieve()
+			.body(new ParameterizedTypeReference<List<GetOptionsResponse>>() {});
+
+		GetOptionsResponse firstOption = getOptionsResponses.getFirst();
+		assertThat(firstOption.name()).isEqualTo("테스트용옵션임");
+
 
 		// 수정
 		ItemRequest updateItemRequest = new ItemRequest("테스트사이다", 2000, "url2");
