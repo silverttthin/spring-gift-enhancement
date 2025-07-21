@@ -33,4 +33,9 @@ INSERT INTO wish_list (user_id, item_id, amount) VALUES
  (2, 4, 1),
  (2, 5, 1),
  (2, 6, 1),
- (2, 7, 1)
+ (2, 7, 1);
+
+INSERT INTO option (option_name, quantity, item_id) VALUES
+('옵션1', 1, 1),
+('옵션2', 1, 1),
+('옵션3', 1, 1);
