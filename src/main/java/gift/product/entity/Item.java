@@ -3,6 +3,8 @@ package gift.product.entity;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 
 @Entity
 public class Item {
@@ -20,6 +22,9 @@ public class Item {
 	private Integer price;
 
 	private String imageUrl;
+
+	@OneToMany(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<Option> options;
 
 	public Item(Long id, User user, String name, Integer price, String imageUrl) {
 		validateKakaoKeyword(name);
@@ -101,6 +106,10 @@ public class Item {
 
 	public String getImageUrl() {
 		return imageUrl;
+	}
+
+	public List<Option> getOptions() {
+		return options;
 	}
 
 }
