@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 
 @DataJpaTest
-public class JpaTest {
+public class WishTest {
 	@Autowired
 	private UserRepository userRepository;
 
