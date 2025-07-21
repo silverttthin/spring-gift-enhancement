@@ -1,6 +1,7 @@
 package gift.product.service;
 
 
+import gift.product.dto.CreateOptionRequest;
 import gift.product.dto.GetOptionsResponse;
 import gift.product.entity.Item;
 import gift.product.entity.Option;
@@ -10,6 +11,7 @@ import gift.product.dto.GetItemResponse;
 import gift.product.dto.ItemRequest;
 import gift.product.repository.OptionRepository;
 import gift.product.repository.UserRepository;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -106,6 +108,23 @@ public class ItemService {
 		return optionList.stream()
 			.map(option -> new GetOptionsResponse(option.getId(), option.getOptionName(), option.getQuantity()))
 			.toList();
+	}
+
+
+	public Long addOption(Long itemId, @Valid CreateOptionRequest req, Long userId) {
+		Item item = itemRepository.findById(itemId)
+			.orElseThrow(() -> new NoSuchElementException("존재하지 않는 아이템입니다."));
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+
+		item.isItemAuthor(user);
+		if(item.duplicateOptionNameCheck(req.optionName())) {
+			throw new IllegalArgumentException("해당 아이템에 이미 존재하는 옵션명입니다.");
+		}
+
+		Option option = new Option(null, req.optionName(), req.quantity(), item);
+		Option saved = optionRepository.save(option);
+		return saved.getId();
 	}
 
 }
