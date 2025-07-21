@@ -43,6 +43,12 @@ public class Item {
 		return new ItemBuilder();
 	}
 
+
+	public boolean duplicateOptionNameCheck(String optionName) {
+		return this.options.stream()
+			.anyMatch(option -> option.getOptionName().equals(optionName));
+	}
+
 	public static class ItemBuilder {
 		private User user;
 		private String name;
