@@ -23,7 +23,7 @@ public class Item {
 
 	private String imageUrl;
 
-	@OneToMany(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	private List<Option> options;
 
 	public Item(Long id, User user, String name, Integer price, String imageUrl) {
