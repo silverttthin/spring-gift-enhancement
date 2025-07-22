@@ -99,7 +99,7 @@ public class ItemService {
 		itemRepository.deleteById(itemId);
 	}
 
-
+	@Transactional(readOnly = true)
 	public List<GetOptionsResponse> getOptions(Long itemId) {
 		Item item = itemRepository.findById(itemId)
 			.orElseThrow(() -> new NoSuchElementException("존재하지 않는 아이템입니다."));
